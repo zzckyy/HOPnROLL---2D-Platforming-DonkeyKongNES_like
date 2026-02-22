@@ -2,11 +2,20 @@ using UnityEngine;
 
 public class playerScript : MonoBehaviour
 {
+    [Header("Player Movement")]
     public float moveSpeed = 3f;
     public float jumpHeight = 8f;
 
+    [Header("Ground Check Sensor")]
+    public Transform groundCheck;
+    public float Radius = 0.1f;
+    public LayerMask groundLayer;
+
     Rigidbody2D rb;
     Transform pos;
+    Animator anim;
+
+    bool isGrounded;
 
     enum playerState
     {
@@ -24,12 +33,15 @@ public class playerScript : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         currentState = playerState.Idle;
         pos = GetComponent<Transform>();
+        anim = GetComponent<Animator>();
     }
 
     // Update is called once per frame
     void Update()
     {
         stateHandler();
+
+        isGrounded = Physics2D.OverlapCircle(groundCheck.position, Radius, groundLayer);
     }
 
     void stateHandler()
@@ -60,7 +72,7 @@ public class playerScript : MonoBehaviour
     {
         float input = Input.GetAxisRaw("Horizontal");
 
-        if (!IsGrounded())
+        if (!isGrounded)
         {
             currentState = playerState.Fall;
             return;
@@ -84,7 +96,7 @@ public class playerScript : MonoBehaviour
     {
         float input = Input.GetAxisRaw("Horizontal");
 
-        if (!IsGrounded())
+        if (!isGrounded)
         {
             currentState = playerState.Fall;
             return;
@@ -112,14 +124,9 @@ public class playerScript : MonoBehaviour
 
     void playerFall()
     {
-        if (IsGrounded())
+        if (isGrounded == true)
         {
             currentState = playerState.Idle;
         }
-    }
-
-    bool IsGrounded()
-    {
-        return Physics2D.Raycast(pos.position, Vector2.down, 0.1f);
     }
 }
