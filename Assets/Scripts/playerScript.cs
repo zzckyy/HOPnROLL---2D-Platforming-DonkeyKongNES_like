@@ -11,7 +11,7 @@ public class playerScript : MonoBehaviour
     public float Radius = 0.1f;
     public LayerMask groundLayer;
     public LayerMask PanjatLayer;
-    public bool canManjat;
+    bool canManjat;
 
     public float scaleX;
     bool isFlip;
@@ -162,7 +162,12 @@ public class playerScript : MonoBehaviour
     void playerClimb()
     {   
         float inputPanjat = Input.GetAxisRaw("Vertical");
-        rb.linearVelocity = new Vector2(rb.linearVelocity.x, inputPanjat * moveSpeed);
+
+        if(canManjat == true)
+        {
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, inputPanjat * moveSpeed);
+        }
+        
 
         if (Mathf.Abs(inputPanjat) == 0)
         {
